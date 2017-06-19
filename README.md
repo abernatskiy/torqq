@@ -1,4 +1,4 @@
-**torqq** is a stub, local implementation of [Portable Batch System](https://en.wikipedia.org/wiki/Portable_Batch_System) (PBS) in pure Bash. Use it to test debug your scripts without having to wait in the queue or to run batches of very short jobs on your local machine.
+**torqq** is a stub, local implementation of [Portable Batch System](https://en.wikipedia.org/wiki/Portable_Batch_System) (PBS) in pure Bash. Use it to test debug your scripts without having to wait in a queue on you cluster or to run batches of very short jobs on your local machine.
 
 Features:
 * all jobs are ran locally;
