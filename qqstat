@@ -1,0 +1,86 @@
+#!/bin/bash
+
+STARTED_FILE=/tmp/torqq-started
+FINISHED_FILE=/tmp/torqq-finished
+
+CLEAN_FILES_UP=true
+
+fullDesc ()
+{
+cat << EndOfMessage
+Job Id: $1
+    Job_Owner = ${USER}@${HOSTNAME}
+    job_state = R
+    queue = default
+    server = ${HOSTNAME}
+    Checkpoint = u
+    exec_host = ${HOSTNAME}
+    Hold_Types = n
+    Join_Path = n
+    Keep_Files = n
+    Mail_Points = n
+    Priority = 0
+    Rerunable = True
+    euser = ${USER}
+    submit_host = ${HOSTNAME}
+
+EndOfMessage
+}
+
+shortRec ()
+{
+printf "%-23s %-11s %-8s %-16s %6s %5s %6s %9s %9s %1s %9s\n" $1 ${USER} default $1 - - - - - R -
+}
+
+# Extract the list of currently running jobs
+if [ -f "$STARTED_FILE" ]; then
+	if [ -f "$FINISHED_FILE" ]; then
+		RUNNING_JOBS=`grep -Fxvf "$FINISHED_FILE" "$STARTED_FILE"`
+	else
+		RUNNING_JOBS=`cat "$STARTED_FILE"`
+	fi
+else
+	exit
+fi
+
+# If the list is empty, all jobs are done - the files can be removed
+if [[ "$RUNNING_JOBS" == "" && "$CLEAN_FILES_UP" == "true" ]]; then
+	echo rm "$STARTED_FILE" "$FINISHED_FILE"
+fi
+
+# Parse the command line and behave accordingly
+while getopts ":f:u:" opt; do
+  case $opt in
+    u)
+      TORQQ_USER="$OPTARG"
+      ;;
+    f)
+			for job in $RUNNING_JOBS; do
+				fullDesc $job
+			done
+			exit 0
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+			echo "usage:"
+			echo "                          qsub [-f] [-u user]"
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+cat << EndOfMessage
+${HOSTNAME}:
+                                                                                  Req'd       Req'd       Elap
+Job ID                  Username    Queue    Jobname          SessID  NDS   TSK   Memory      Time    S   Time
+----------------------- ----------- -------- ---------------- ------ ----- ------ --------- --------- - ---------
+EndOfMessage
+
+for job in $RUNNING_JOBS; do
+	shortRec $job
+done
+

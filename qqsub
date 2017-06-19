@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# torqq: Trivial bash implementation of PBS for running jobs locally
+# This script imitates qsub, supporting the following subset of its options:
+# -q queue - locally no meaning
+# -l resorceVars - those are not enforced, of course
+# -v environmentVars - the only working option
+# Additionally, the built-in variable ${PBS_O_WORKDIR} is provided
+
+# Test command:
+# ./qqsub -q shortq -l walltime=01:00:00 -v PYTHON=/usr/bin/python2,PBSGRIDWALKER_HOME=$HOME/morphMod/pbsGridWalker,PARENT_SCRIPT=$HOME/morphMod/twoMorphologies3.py,
+# POINTS_PER_JOB=25 $HOME/morphMod/pbsGridWalker/pbs.sh
+
+STARTED_FILE=/tmp/torqq-started
+FINISHED_FILE=/tmp/torqq-finished
+
+while getopts ":q::l::v:" opt; do
+	case $opt in
+		q)
+			QUEUE="$OPTARG"
+			;;
+		l)
+			RESOURCES="$OPTARG"
+      ;;
+		v)
+			ENVIRONMENT="$OPTARG"
+			;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+for EXECUTABLE in $@; do true; done # get the last command line argument
+ID=${BASHPID}
+
+# Debug
+# echo -e "Got the following params:\nQUEUE=${QUEUE}\nRESOURCES=${RESOURCES}\nENVIRONMENT=${ENVIRONMENT}\nEXECUTABLE=${EXECUTABLE}\nID=${ID}"
+
+# Executing the excutable with environment variables supplied with -v and the additional PBS_O_WORKDIR varaible
+bash -c "echo ${ID} >> ${STARTED_FILE}; PBS_O_WORKDIR="`pwd`" `echo "$ENVIRONMENT" | sed -e 's/\([a-zA-Z_]\+=[^=]*\),/\1 /g'` /bin/bash ${EXECUTABLE}; echo ${ID} >> ${FINISHED_FILE}" > o${ID} 2>e${ID} &
+
+echo $BASHPID
