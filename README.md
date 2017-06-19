@@ -14,10 +14,10 @@ Usage
 
 Replacement for qsub. Options:
 
- -v variable_list
+	-v variable_list
 		Comma-separated list of environment variables that can be used within the script.
 
- -q destination, -l resource_list
+	-q destination, -l resource_list
 		Added for compatibility, arguments are ignored.
 
 Provided environment variables:
