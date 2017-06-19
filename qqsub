@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# torqq: Trivial bash implementation of PBS for running jobs locally
+# torqq -- run Portable Batch System scripts locally
+# torqq is released under the New BSD license (see LICENSE.txt).
+# Go to the project home page for more info:
+# https://github.com/abernatskiy/torqq
+
 # This script imitates qsub, supporting the following subset of its options:
 # -q queue - locally no meaning
 # -l resorceVars - those are not enforced, of course

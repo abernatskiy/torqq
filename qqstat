@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# torqq -- run Portable Batch System scripts locally
+# torqq is released under the New BSD license (see LICENSE.txt).
+# Go to the project home page for more info:
+# https://github.com/abernatskiy/torqq
+
 STARTED_FILE=/tmp/torqq-started
 FINISHED_FILE=/tmp/torqq-finished
 
