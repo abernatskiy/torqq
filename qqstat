@@ -45,12 +45,12 @@ if [ -f "$STARTED_FILE" ]; then
 		RUNNING_JOBS=`cat "$STARTED_FILE"`
 	fi
 else
-	exit
+	exit 0
 fi
 
 # If the list is empty, all jobs are done - the files can be removed
 if [[ "$RUNNING_JOBS" == "" && "$CLEAN_FILES_UP" == "true" ]]; then
-	echo rm "$STARTED_FILE" "$FINISHED_FILE"
+	rm "$STARTED_FILE" "$FINISHED_FILE"
 fi
 
 # Parse the command line and behave accordingly
