@@ -48,4 +48,4 @@ ID=${BASHPID}
 # Executing the excutable with environment variables supplied with -v and the additional PBS_O_WORKDIR varaible
 bash -c "echo ${ID} >> ${STARTED_FILE}; PBS_O_WORKDIR="`pwd`" `echo "$ENVIRONMENT" | sed -e 's/\([a-zA-Z_]\+=[^=]*\),/\1 /g'` /bin/bash ${EXECUTABLE}; echo ${ID} >> ${FINISHED_FILE}" > o${ID} 2>e${ID} &
 
-echo $BASHPID
+echo -n $BASHPID
