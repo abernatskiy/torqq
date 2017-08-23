@@ -1,1 +1,2 @@
 qqdel
+if qqstat is ran on empty queue, it gives different outputs depending on if the job lists are identical or nonexistent. Shouldn't happen.
